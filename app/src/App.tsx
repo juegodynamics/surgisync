@@ -1,6 +1,5 @@
 import CssBaseline from '@mui/material/CssBaseline';
 import {createTheme, ThemeProvider} from '@mui/material/styles';
-import Page from './nav';
 import Scheduling from './services/scheduling';
 
 const PRIMARY = '#ED80BD';
