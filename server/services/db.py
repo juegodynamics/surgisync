@@ -1,5 +1,8 @@
+import json
 import psycopg2  # type: ignore[import-untyped]
+
 from models import Id
+from models.domainresource import DomainResource
 
 
 def clean_nones(value):
@@ -32,3 +35,24 @@ class DBAccessWrapper:
 
         resource_data = self.cursor.fetchone()[0]
         return clean_nones(resource_data)
+
+    def get_resources(self, resourceType: str, limit: int = 20):
+        self.cursor.execute(
+            f"SELECT resource_data FROM fhir WHERE resource_type = '{resourceType}'"
+        )
+
+        resource_data = self.cursor.fetchmany()[0]
+        return clean_nones(resource_data)
+
+    def insert_resource(self, resource: DomainResource):
+        self.cursor.execute(
+            "INSERT INTO fhir (id, resource_type, resource_data) VALUES (%s, %s, %s)",
+            (
+                resource.id,
+                resource.resourceType,
+                json.dumps(resource.dict(), default=str),
+            ),
+        )
+
+        self.conn.commit()
+        return

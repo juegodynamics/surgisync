@@ -9,7 +9,7 @@ from mocks import (
     organization_level1_health_system,
     organization_level2_hospital,
     organization_level3_surgical,
-    organizations__operating_rooms,
+    organizations__level4_operating_rooms,
 )
 
 # As of now, no user/password set
@@ -17,6 +17,9 @@ conn = psycopg2.connect(database="surgisync", user="", password="", port=5432)
 
 # Open a cursor to perform database operations
 cur = conn.cursor()
+
+cur.execute("""DROP TABLE fhir;""")
+conn.commit()
 
 # Create fhir table
 cur.execute(
@@ -37,7 +40,7 @@ for resource in [
     organization_level1_health_system,
     organization_level2_hospital,
     organization_level3_surgical,
-    *organizations__operating_rooms,
+    *organizations__level4_operating_rooms,
 ]:
     cur.execute(
         "INSERT INTO fhir (id, resource_type, resource_data) VALUES (%s, %s, %s)",

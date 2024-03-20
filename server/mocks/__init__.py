@@ -8,7 +8,13 @@ from .organizations import (
     organization_level1_health_system,
     organization_level2_hospital,
     organization_level3_surgical,
-    organizations__operating_rooms,
+    organizations__level4_operating_rooms,
+)
+
+from .practitioners import (
+    practitioner_surgeon_1,
+    practitioner_surgeon_2,
+    practitioner_surgeon_3,
 )
 
 __all__ = [
@@ -18,5 +24,8 @@ __all__ = [
     "organization_level1_health_system",
     "organization_level2_hospital",
     "organization_level3_surgical",
-    "organizations__operating_rooms",
+    "organizations__level4_operating_rooms",
+    "practitioner_surgeon_1",
+    "practitioner_surgeon_2",
+    "practitioner_surgeon_3",
 ]

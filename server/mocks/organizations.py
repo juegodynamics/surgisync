@@ -51,7 +51,7 @@ _preallocated_ids = [
     "1f6b3b31-bdc5-485b-b41f-b513fa317dab",
 ]
 
-organizations__operating_rooms = [
+organizations__level4_operating_rooms = [
     Organization(
         resourceType="Organization",
         id=Id(_preallocated_ids[room]),
@@ -63,3 +63,13 @@ organizations__operating_rooms = [
     )
     for room in range(20)
 ]
+
+organization_level4_surgicalteam = Organization(
+    resourceType="Organization",
+    id=Id("20243188-67d0-3644-a90c-9520c0f59194"),
+    extension=[ExtensionFactory.SurgicalTeam()],
+    active=True,
+    name="FHNY: Surgical Team",
+    type=[CodeableConcept.from_coding(OrganizationType.team)],
+    partOf=Reference.from_resource(organization_level3_surgical),
+)

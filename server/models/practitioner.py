@@ -21,7 +21,7 @@ class Practitioner(domainresource.DomainResource):
         description="A name associated with the individual.",
     )
 
-    telecom: List[common.ContactPoint] = Field(
+    telecom: Optional[List[common.ContactPoint]] = Field(
         None,
         alias="telecom",
         title="A contact detail for the individual",

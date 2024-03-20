@@ -50,3 +50,11 @@ class ExtensionFactory:
             url="operating-room",
             value={"boolean": True},
         )
+
+    @staticmethod
+    def SurgicalTeam() -> Extension:
+        return Extension(
+            # TODO
+            url="surgical-team",
+            value={"boolean": True},
+        )
