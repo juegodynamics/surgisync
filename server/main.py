@@ -1,5 +1,6 @@
 import os
 import sys
+import uuid
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from services.db import DBAccessWrapper
@@ -30,23 +31,44 @@ async def getResource(resourceType: str, id: str):
     return db.get_resource(resourceType=resourceType, id=Id(id))
 
 
+@app.get("/v1/patients")
+async def getPatients():
+    db = DBAccessWrapper()
+    return db.get_patients()
+
+
 @app.get("/v1/appointments/participant/{participant_id}")
 async def getAppointmentsByParticipantId(participant_id: str):
     db = DBAccessWrapper()
     return db.get_appointments_by_participant(participant_id)
 
 
-@app.post("/v1/appointments")
-async def insertAppointment(appointment: Appointment):
+@app.post("/v1/appointments/")
+async def insertAppointment(appointment: dict):
+    if "id" not in appointment:
+        appointment["id"] = Id(uuid.uuid4())
+    resource = Appointment.parse_obj(appointment)
+
     db = DBAccessWrapper()
-    db.insert_resource(appointment)
+    db.insert_resource(resource)
     return {"success": True}
 
 
 @app.post("/v1/appointments/{appointment_id}")
-async def updateAppointment(appointment: Appointment):
+async def updateAppointment(appointment_id, appointment: dict):
+    if "id" not in appointment:
+        appointment["id"] = Id(appointment_id)
+    resource = Appointment.parse_obj(appointment)
+
     db = DBAccessWrapper()
-    db.update_resource(appointment)
+    db.update_resource(resource)
+    return {"success": True}
+
+
+@app.delete("/v1/appointments/{appointment_id}")
+async def deleteAppointment(appointment_id: str):
+    db = DBAccessWrapper()
+    db.delete_resource(Id(appointment_id), "Appointment")
     return {"success": True}
 
 

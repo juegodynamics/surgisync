@@ -1,5 +1,6 @@
 import json
 import psycopg2  # type: ignore[import-untyped]
+import uuid
 
 from models import Id
 from models.domainresource import DomainResource
@@ -46,8 +47,8 @@ class DBAccessWrapper:
             """
         )
         try:
-            resource_data = self.cursor.fetchmany()[0]
-            return clean_nones(resource_data)
+            resource_data = self.cursor.fetchmany(20)
+            return clean_nones(list([entry[0] for entry in resource_data]))
         except TypeError:
             return None
 
@@ -56,10 +57,21 @@ class DBAccessWrapper:
             f"SELECT resource_data FROM fhir WHERE resource_type = '{resourceType}'"
         )
 
-        resource_data = self.cursor.fetchmany()[0]
+        resource_data = self.cursor.fetchmany(limit)[0]
         return clean_nones(resource_data)
 
+    def get_patients(self):
+        self.cursor.execute(
+            "SELECT resource_data FROM fhir WHERE resource_type = 'Patient'"
+        )
+
+        resource_data = self.cursor.fetchmany(20)
+        return clean_nones(list([entry[0] for entry in resource_data]))
+
     def insert_resource(self, resource: DomainResource):
+        if resource.id is None:
+            resource.id = Id(uuid.uuid4())
+
         self.cursor.execute(
             "INSERT INTO fhir (id, resource_type, resource_data) VALUES (%s, %s, %s)",
             (
@@ -74,8 +86,15 @@ class DBAccessWrapper:
 
     def update_resource(self, resource: DomainResource):
         self.cursor.execute(
-            f"UPDATE fhir SET (resource_data) VALUES (%s) WHERE id = '{resource.id}'",
-            (json.dumps(resource.dict(), default=str),),
+            f"UPDATE fhir SET resource_data = '{json.dumps(resource.dict(), default=str)}' WHERE id = '{resource.id}'",
+        )
+
+        self.conn.commit()
+        return
+
+    def delete_resource(self, resource_id: Id, resourceType: str):
+        self.cursor.execute(
+            f"UPDATE fhir SET resource_type = '{resourceType}_Deleted' WHERE id = '{resource_id}'",
         )
 
         self.conn.commit()

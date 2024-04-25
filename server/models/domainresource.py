@@ -15,7 +15,7 @@ class WrongResourceType(PydanticValueError):
 class DomainResource(base.Base):
     resourceType: str = ...  # type: ignore
 
-    id: common.Id = Field(
+    id: typing.Optional[common.Id] = Field(
         default=None,
         alias="id",
         title="Logical id of this artifact",

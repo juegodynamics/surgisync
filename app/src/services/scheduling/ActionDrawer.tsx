@@ -20,20 +20,30 @@ import {Appointment} from 'models/Appointment';
 
 export const DRAWER_WIDTH = 300;
 
-const AppointmentListItem = ({appointment}: {appointment: Appointment}) => (
-    <ListItem>
+const AppointmentListItem = ({
+    appointment,
+    selected,
+    onClick,
+}: {
+    appointment: Appointment;
+    selected?: boolean;
+    onClick: () => void;
+}) => (
+    <ListItemButton selected={selected} onClick={onClick}>
         <ListItemText>{appointment.id || 'Unscheduled'}</ListItemText>
-    </ListItem>
+    </ListItemButton>
 );
 
 export const ActionDrawer = ({
-    selectedAppointment,
     appointments,
     onNewAppointment,
+    selectedAppointment,
+    setSelectedAppointment,
 }: {
-    selectedAppointment: number | null;
     appointments: Appointment[];
     onNewAppointment: () => void;
+    selectedAppointment: number | null;
+    setSelectedAppointment: (nextIndex: number) => void;
 }) => {
     return (
         <Drawer
@@ -51,7 +61,12 @@ export const ActionDrawer = ({
             <Toolbar />
             <Divider />
             <Stack p={2} spacing={2}>
-                <Fab variant="extended" onClick={onNewAppointment}>
+                <Fab
+                    variant="extended"
+                    onClick={() => {
+                        onNewAppointment();
+                    }}
+                >
                     <AddIcon />
                     Add Appointment
                 </Fab>
@@ -59,6 +74,8 @@ export const ActionDrawer = ({
                     <AppointmentListItem
                         key={index}
                         appointment={appointment}
+                        selected={index === selectedAppointment}
+                        onClick={() => setSelectedAppointment(index)}
                     />
                 ))}
             </Stack>

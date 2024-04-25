@@ -38,5 +38,15 @@ export interface AppointmentParticipant {
     actor: Reference;
     required: boolean;
     status: 'accepted' | 'declined' | 'tentative' | 'needs-action';
-    type: CodeableConcept;
+    type: CodeableConcept[];
+}
+
+export interface Patient {
+    id: string;
+    name: [
+        {
+            family: string;
+            given: string[];
+        }
+    ];
 }
