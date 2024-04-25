@@ -36,6 +36,21 @@ class DBAccessWrapper:
         resource_data = self.cursor.fetchone()[0]
         return clean_nones(resource_data)
 
+    def get_appointments_by_participant(self, participant_id: str):
+        self.cursor.execute(
+            f"""
+            SELECT resource_data 
+            FROM fhir 
+            WHERE resource_type = 'Appointment' 
+                AND resource_data @> '{{"participant": [{{"actor": {{"reference": "{participant_id}"}}}}]}}'
+            """
+        )
+        try:
+            resource_data = self.cursor.fetchmany()[0]
+            return clean_nones(resource_data)
+        except TypeError:
+            return None
+
     def get_resources(self, resourceType: str, limit: int = 20):
         self.cursor.execute(
             f"SELECT resource_data FROM fhir WHERE resource_type = '{resourceType}'"
@@ -52,6 +67,15 @@ class DBAccessWrapper:
                 resource.resourceType,
                 json.dumps(resource.dict(), default=str),
             ),
+        )
+
+        self.conn.commit()
+        return
+
+    def update_resource(self, resource: DomainResource):
+        self.cursor.execute(
+            f"UPDATE fhir SET (resource_data) VALUES (%s) WHERE id = '{resource.id}'",
+            (json.dumps(resource.dict(), default=str),),
         )
 
         self.conn.commit()

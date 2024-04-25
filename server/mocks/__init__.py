@@ -17,6 +17,8 @@ from .practitioners import (
     practitioner_surgeon_3,
 )
 
+from .appointments import appointment_surg_tomorrow
+
 __all__ = [
     "patient_Douglas_Olson",
     "patient_Elidia_Suellen_Hackett",
@@ -28,4 +30,5 @@ __all__ = [
     "practitioner_surgeon_1",
     "practitioner_surgeon_2",
     "practitioner_surgeon_3",
+    "appointment_surg_tomorrow",
 ]

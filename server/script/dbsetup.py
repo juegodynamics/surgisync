@@ -10,6 +10,7 @@ from mocks import (
     organization_level2_hospital,
     organization_level3_surgical,
     organizations__level4_operating_rooms,
+    appointment_surg_tomorrow,
 )
 
 # As of now, no user/password set
@@ -41,6 +42,7 @@ for resource in [
     organization_level2_hospital,
     organization_level3_surgical,
     *organizations__level4_operating_rooms,
+    appointment_surg_tomorrow,
 ]:
     cur.execute(
         "INSERT INTO fhir (id, resource_type, resource_data) VALUES (%s, %s, %s)",

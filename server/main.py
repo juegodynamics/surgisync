@@ -3,7 +3,7 @@ import sys
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from services.db import DBAccessWrapper
-from models import Id
+from models import Id, Appointment
 
 # Get the parent directory of the current script.
 # Note that __file__ is the filename of the current script.
@@ -30,9 +30,24 @@ async def getResource(resourceType: str, id: str):
     return db.get_resource(resourceType=resourceType, id=Id(id))
 
 
-@app.get("/v1/schedules")
-async def getSurgicalSchedule():
-    return {"test": True}
+@app.get("/v1/appointments/participant/{participant_id}")
+async def getAppointmentsByParticipantId(participant_id: str):
+    db = DBAccessWrapper()
+    return db.get_appointments_by_participant(participant_id)
+
+
+@app.post("/v1/appointments")
+async def insertAppointment(appointment: Appointment):
+    db = DBAccessWrapper()
+    db.insert_resource(appointment)
+    return {"success": True}
+
+
+@app.post("/v1/appointments/{appointment_id}")
+async def updateAppointment(appointment: Appointment):
+    db = DBAccessWrapper()
+    db.update_resource(appointment)
+    return {"success": True}
 
 
 if __name__ == "__main__":
