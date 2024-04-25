@@ -1,4 +1,4 @@
-from .appointment import Appointment
+from .appointment import Appointment, AppointmentParticipant
 from .common import (
     Id,
     Date,
@@ -24,6 +24,7 @@ from .slot import Slot
 
 __all__ = [
     "Appointment",
+    "AppointmentParticipant",
     "Id",
     "Date",
     "DateTime",

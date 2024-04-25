@@ -124,7 +124,7 @@ class Appointment(domainresource.DomainResource):
         description="List of participants involved in the appointment.",
     )
 
-    reason: common.CodeableReference = Field(
+    reason: Optional[common.CodeableReference] = Field(
         default=None,
         alias="reason",
         title="Reason this appointment is scheduled",
@@ -229,3 +229,6 @@ class AppointmentParticipant(base.Base):
         title="Role of participant in the appointment",
         description=None,
     )
+
+
+Appointment.update_forward_refs()
